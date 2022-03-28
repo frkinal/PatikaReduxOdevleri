@@ -1,16 +1,20 @@
-import {StyleSheet} from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
+
+const { width, height } = Dimensions.get('window')
 
 export default StyleSheet.create({
   container: {
-    padding: 10,
-    margin: 10,
-    backgroundColor: '#2286c3',
-    borderRadius: 5,
-    alignItems:'center',
+    width: width / 1.3,
+    borderRadius: 20,
+    backgroundColor: '#808080',
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    alignItems: 'center',
+    marginTop:20
   },
   title: {
-      fontWeight:'bold',
-      fontSize:17,
-      color:'white'
+    fontWeight: 'bold',
+    fontSize: 20,
+    color: 'white'
   },
 });

@@ -5,6 +5,8 @@ import {
   TextInput,
   Text,
   TouchableOpacity,
+  Modal,
+  Alert
 } from 'react-native';
 
 import { useDispatch } from 'react-redux';
@@ -17,18 +19,15 @@ import Input from '../Input/Input';
 
 const Form = () => {
   const [name, setName] = useState('');
+  const [surname, setSurname] = useState('');
   const [number, setNumber] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState(number);
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+
   const dispatch = useDispatch();
 
-  const handleAdd = e => {
-    e.preventDefault();
-    if (!name || !number) return false;
-
-    dispatch(addContact({ id: nanoid(), name, phoneNumber: number }));
-
-    setName('');
-    setNumber('');
-  };
 
   let numbers = [
     { id: '1' },
@@ -47,40 +46,85 @@ const Form = () => {
 
   const onPressNumber = num => {
     var number = num.id;
-    setNumber(num.id)
-    console.log(number)
+    setPhoneNumber(phoneNumber + number)
+    setNumber(phoneNumber)
   };
+  const handleDelete = () => {
+    setPhoneNumber(phoneNumber?.slice(0, phoneNumber?.length - 1));
+  };
+  const handleAdd = () => {
+    if (phoneNumber.length != 10) {
+      console.log('Hatali')
+    } else {
+      setIsModalVisible(true);
+    }
+  };
+  const saveEdit = () => {
+    setIsModalVisible(true);
+    phoneNumber.concat()
+    if (name != '' & surname != '') {
+      const res = dispatch(addContact({ id: nanoid(), name, surname, phoneNumber:phoneNumber }));
+      console.log(res)
+      //setName('');
+      //setSurname('');
+      //setPhoneNumber('');
+    } else {
+      Alert.alert('Contact', 'Bilgiler eksik tekrar deneyiniz.', [
+        {
+          text: 'Kapat',
+        }
+      ])
+    }
+    setIsModalVisible(false);
+  }
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.body_container}>
-        {/*<TextInput
-          placeholder="Enter The Name"
-          value={name}
-          onChangeText={value => setName(value)}
-        />*/}
-        <TextInput
-          placeholder="Enter the Phone Number "
-          keyboardType="numeric"
-          value={number}
-          onChangeText={value => setNumber(value)}
-        />
-        <TextInput placeholder="Enter the Phone Number " value={number} />
-        <Input number={number} />
-        <View style={styles.numberContainer}>
-          {numbers.map(num => {
-            return (
+      <Input number={phoneNumber} onPressDelete={handleDelete} />
+      <View style={styles.numberContainer}>
+        {numbers.map(num => {
+          return (
+            <TouchableOpacity
+              style={styles.number}
+              key={num.id}
+              onPress={() => onPressNumber(num)}>
+              <Text style={styles.numberText}>{num.id}</Text>
+            </TouchableOpacity>
+          );
+        })}
+        <Modal
+          animationType="fade"
+          visible={isModalVisible}
+          onRequestClose={() => setIsModalVisible(false)}>
+          <View style={styles.modalView}>
+            <View style={styles.modalView2}>
+              <View style={styles.editView}>
+                <Text style={styles.modalText}>Kişi Ekle</Text>
+                <TextInput
+                  placeholder='Adini Giriniz'
+                  style={styles.modalTextInput}
+                  value={name}
+                  onChangeText={(value) => setName(value)}
+                  editable={true}
+                />
+                <TextInput
+                  placeholder='Soyadini Giriniz'
+                  style={styles.modalTextInput}
+                  value={surname}
+                  onChangeText={(value) => setSurname(value)}
+                  editable={true}
+                />
+              </View>
               <TouchableOpacity
-                style={styles.number}
-                key={num.id}
-                onPress={() => onPressNumber(num)}>
-                <Text style={styles.numberText}>{num.id}</Text>
+                onPress={() => saveEdit()}
+                style={styles.saveEdit}>
+                <Text style={styles.saveText}>Kaydet</Text>
               </TouchableOpacity>
-            );
-          })}
-        </View>
-        <Button text="Handle" onPress={handleAdd} />
+            </View>
+          </View>
+        </Modal>
       </View>
+      <Button text="Handle" onPress={handleAdd} />
     </SafeAreaView>
   );
 };

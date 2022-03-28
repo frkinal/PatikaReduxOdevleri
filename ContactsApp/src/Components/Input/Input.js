@@ -7,10 +7,10 @@ import Icon from 'react-native-vector-icons/Feather'
 
 const Input = ({ number, onPressDelete }) => {
     return (
-        <View style={styles.cotainer}>
+        <View style={styles.container}>
             <Text style={styles.number}>{number}</Text>
             <TouchableOpacity style={styles.button} onPress={onPressDelete}>
-                <Icon name='delete' size={30} />
+                <Icon name='delete' size={30} color='white' />
             </TouchableOpacity>
         </View>
     )
